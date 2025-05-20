@@ -12,12 +12,14 @@
           <el-card class="config-card" shadow="never">
             <div class="config-header">
               <div class="header-icon">
-                <img loading="lazy" src="@/assets/home/setting-user.png" alt="">
+                <img
+                  loading="lazy"
+                  src="@/assets/home/setting-user.png"
+                  alt=""
+                />
               </div>
               <span class="header-title">{{ form.agentName }}</span>
-              <button class="custom-close-btn" @click="goToHome">
-                ×
-              </button>
+              <button class="custom-close-btn" @click="goToHome">×</button>
             </div>
             <div class="divider"></div>
 
@@ -28,79 +30,180 @@
                     <el-form-item label="助手昵称：">
                       <el-input v-model="form.agentName" class="form-input" />
                     </el-form-item>
+                    <el-form-item label="唤醒词：">
+                      <el-input v-model="form.wakeupWord" class="form-input" />
+                    </el-form-item>
+                    <el-form-item label="声纹文本：">
+                      <el-input
+                        v-model="form.speechSample"
+                        class="form-input"
+                      />
+                    </el-form-item>
                     <el-form-item label="角色模版：">
                       <div class="template-container">
-                        <div v-for="(template, index) in templates" :key="`template-${index}`" class="template-item"
-                          :class="{ 'template-loading': loadingTemplate }" @click="selectTemplate(template)">
+                        <div
+                          v-for="(template, index) in templates"
+                          :key="`template-${index}`"
+                          class="template-item"
+                          :class="{ 'template-loading': loadingTemplate }"
+                          @click="selectTemplate(template)"
+                        >
                           {{ template.agentName }}
                         </div>
                       </div>
                     </el-form-item>
                     <el-form-item label="角色介绍：">
-                      <el-input type="textarea" rows="12" resize="none" placeholder="请输入内容" v-model="form.systemPrompt"
-                        maxlength="2000" show-word-limit class="form-textarea" />
+                      <el-input
+                        type="textarea"
+                        rows="12"
+                        resize="none"
+                        placeholder="请输入内容"
+                        v-model="form.systemPrompt"
+                        maxlength="2000"
+                        show-word-limit
+                        class="form-textarea"
+                      />
                     </el-form-item>
-                    <el-form-item label="语言编码：" style="display: none;">
-                      <el-input v-model="form.langCode" placeholder="请输入语言编码，如：zh_CN" maxlength="10" show-word-limit
-                        class="form-input" />
+                    <el-form-item label="语言编码：" style="display: none">
+                      <el-input
+                        v-model="form.langCode"
+                        placeholder="请输入语言编码，如：zh_CN"
+                        maxlength="10"
+                        show-word-limit
+                        class="form-input"
+                      />
                     </el-form-item>
-                    <el-form-item label="交互语种：" style="display: none;">
-                      <el-input v-model="form.language" placeholder="请输入交互语种，如：中文" maxlength="10" show-word-limit
-                        class="form-input" />
+                    <el-form-item label="交互语种：" style="display: none">
+                      <el-input
+                        v-model="form.language"
+                        placeholder="请输入交互语种，如：中文"
+                        maxlength="10"
+                        show-word-limit
+                        class="form-input"
+                      />
                     </el-form-item>
                     <div class="action-bar">
-                      <el-button type="primary" class="save-btn" @click="saveConfig">保存配置</el-button>
-                      <el-button class="reset-btn" @click="resetConfig">重置</el-button>
+                      <el-button
+                        type="primary"
+                        class="save-btn"
+                        @click="saveConfig"
+                        >保存配置</el-button
+                      >
+                      <el-button class="reset-btn" @click="resetConfig"
+                        >重置</el-button
+                      >
                       <div class="hint-text">
-                        <img loading="lazy" src="@/assets/home/red-info.png" alt="">
-                        <span>保存配置后，需要重启设备，新的配置才会生效。</span>
+                        <img
+                          loading="lazy"
+                          src="@/assets/home/red-info.png"
+                          alt=""
+                        />
+                        <span
+                          >保存配置后，需要重启设备，新的配置才会生效。</span
+                        >
                       </div>
                     </div>
                   </div>
                   <div class="form-column">
-                    <el-form-item v-for="(model, index) in models" :key="`model-${index}`" :label="model.label"
-                      class="model-item">
+                    <el-form-item
+                      v-for="(model, index) in models"
+                      :key="`model-${index}`"
+                      :label="model.label"
+                      class="model-item"
+                    >
                       <div class="model-select-wrapper">
-                        <el-select v-model="form.model[model.key]" filterable placeholder="请选择" class="form-select"
-                          @change="handleModelChange(model.type, $event)">
-                          <el-option v-for="(item, optionIndex) in modelOptions[model.type]"
-                            :key="`option-${index}-${optionIndex}`" :label="item.label" :value="item.value" />
+                        <el-select
+                          v-model="form.model[model.key]"
+                          filterable
+                          placeholder="请选择"
+                          class="form-select"
+                          @change="handleModelChange(model.type, $event)"
+                        >
+                          <el-option
+                            v-for="(item, optionIndex) in modelOptions[
+                              model.type
+                            ]"
+                            :key="`option-${index}-${optionIndex}`"
+                            :label="item.label"
+                            :value="item.value"
+                          />
                         </el-select>
-                        <div v-if="showFunctionIcons(model.type)" class="function-icons">
-                          <el-tooltip v-for="func in currentFunctions" :key="func.name" effect="dark" placement="top"
-                            popper-class="custom-tooltip">
+                        <div
+                          v-if="showFunctionIcons(model.type)"
+                          class="function-icons"
+                        >
+                          <el-tooltip
+                            v-for="func in currentFunctions"
+                            :key="func.name"
+                            effect="dark"
+                            placement="top"
+                            popper-class="custom-tooltip"
+                          >
                             <div slot="content">
-                              <div><strong>功能名称:</strong> {{ func.name }}</div>
+                              <div>
+                                <strong>功能名称:</strong> {{ func.name }}
+                              </div>
                               <div v-if="Object.keys(func.params).length > 0">
                                 <strong>参数配置:</strong>
-                                <div v-for="(value, key) in func.params" :key="key">
+                                <div
+                                  v-for="(value, key) in func.params"
+                                  :key="key"
+                                >
                                   {{ key }}: {{ value }}
                                 </div>
                               </div>
                               <div v-else>无参数配置</div>
                             </div>
-                            <div class="icon-dot" :style="{ backgroundColor: getFunctionColor(func.name) }">
+                            <div
+                              class="icon-dot"
+                              :style="{
+                                backgroundColor: getFunctionColor(func.name),
+                              }"
+                            >
                               {{ func.name.charAt(0) }}
                             </div>
                           </el-tooltip>
-                          <el-button class="edit-function-btn" @click="showFunctionDialog = true"
-                            :class="{ 'active-btn': showFunctionDialog }">
+                          <el-button
+                            class="edit-function-btn"
+                            @click="showFunctionDialog = true"
+                            :class="{ 'active-btn': showFunctionDialog }"
+                          >
                             编辑功能
                           </el-button>
                         </div>
-                        <div v-if="model.type === 'Memory' && form.model.memModelId !== 'Memory_nomem'"
-                          class="chat-history-options">
-                          <el-radio-group v-model="form.chatHistoryConf" @change="updateChatHistoryConf">
-                            <el-radio-button :label="1">上报文字</el-radio-button>
-                            <el-radio-button :label="2">上报文字+语音</el-radio-button>
+                        <div
+                          v-if="
+                            model.type === 'Memory' &&
+                            form.model.memModelId !== 'Memory_nomem'
+                          "
+                          class="chat-history-options"
+                        >
+                          <el-radio-group
+                            v-model="form.chatHistoryConf"
+                            @change="updateChatHistoryConf"
+                          >
+                            <el-radio-button :label="1"
+                              >上报文字</el-radio-button
+                            >
+                            <el-radio-button :label="2"
+                              >上报文字+语音</el-radio-button
+                            >
                           </el-radio-group>
                         </div>
                       </div>
                     </el-form-item>
                     <el-form-item label="角色音色">
-                      <el-select v-model="form.ttsVoiceId" placeholder="请选择" class="form-select">
-                        <el-option v-for="(item, index) in voiceOptions" :key="`voice-${index}`" :label="item.label"
-                          :value="item.value" />
+                      <el-select
+                        v-model="form.ttsVoiceId"
+                        placeholder="请选择"
+                        class="form-select"
+                      >
+                        <el-option
+                          v-for="(item, index) in voiceOptions"
+                          :key="`voice-${index}`"
+                          :label="item.label"
+                          :value="item.value"
+                        />
                       </el-select>
                     </el-form-item>
                   </div>
@@ -112,24 +215,30 @@
       </div>
     </div>
 
-    <function-dialog v-model="showFunctionDialog" :functions="currentFunctions"
-      @update-functions="handleUpdateFunctions" @dialog-closed="handleDialogClosed" />
+    <function-dialog
+      v-model="showFunctionDialog"
+      :functions="currentFunctions"
+      @update-functions="handleUpdateFunctions"
+      @dialog-closed="handleDialogClosed"
+    />
   </div>
 </template>
 
 <script>
-import Api from '@/apis/api';
+import Api from "@/apis/api";
 import FunctionDialog from "@/components/FunctionDialog.vue";
 import HeaderBar from "@/components/HeaderBar.vue";
 
 export default {
-  name: 'RoleConfigPage',
+  name: "RoleConfigPage",
   components: { HeaderBar, FunctionDialog },
   data() {
     return {
       form: {
         agentCode: "",
         agentName: "",
+        wakeupWord: "",
+        speechSample: "",
         ttsVoiceId: "",
         chatHistoryConf: 0,
         systemPrompt: "",
@@ -143,15 +252,15 @@ export default {
           llmModelId: "",
           memModelId: "",
           intentModelId: "",
-        }
+        },
       },
       models: [
-        { label: '语音活动检测(VAD)', key: 'vadModelId', type: 'VAD' },
-        { label: '语音识别(ASR)', key: 'asrModelId', type: 'ASR' },
-        { label: '大语言模型(LLM)', key: 'llmModelId', type: 'LLM' },
-        { label: '意图识别(Intent)', key: 'intentModelId', type: 'Intent' },
-        { label: '记忆(Memory)', key: 'memModelId', type: 'Memory' },
-        { label: '语音合成(TTS)', key: 'ttsModelId', type: 'TTS' },
+        { label: "语音活动检测(VAD)", key: "vadModelId", type: "VAD" },
+        { label: "语音识别(ASR)", key: "asrModelId", type: "ASR" },
+        { label: "大语言模型(LLM)", key: "llmModelId", type: "LLM" },
+        { label: "意图识别(Intent)", key: "intentModelId", type: "Intent" },
+        { label: "记忆(Memory)", key: "memModelId", type: "Memory" },
+        { label: "语音合成(TTS)", key: "ttsModelId", type: "TTS" },
       ],
       modelOptions: {},
       templates: [],
@@ -160,25 +269,32 @@ export default {
       showFunctionDialog: false,
       currentFunctions: [],
       functionColorMap: [
-        '#FF6B6B', '#4ECDC4', '#45B7D1',
-        '#96CEB4', '#FFEEAD', '#D4A5A5', '#A2836E'
+        "#FF6B6B",
+        "#4ECDC4",
+        "#45B7D1",
+        "#96CEB4",
+        "#FFEEAD",
+        "#D4A5A5",
+        "#A2836E",
       ],
       allFunctions: [
-        { name: '天气', params: {} },
-        { name: '新闻', params: {} },
-        { name: '工具', params: {} },
-        { name: '退出', params: {} }
+        { name: "天气", params: {} },
+        { name: "新闻", params: {} },
+        { name: "工具", params: {} },
+        { name: "退出", params: {} },
       ],
-    }
+    };
   },
   methods: {
     goToHome() {
-      this.$router.push('/home');
+      this.$router.push("/home");
     },
     saveConfig() {
       const configData = {
         agentCode: this.form.agentCode,
         agentName: this.form.agentName,
+        wakeupWord: this.form.wakeupWord,
+        speechSample: this.form.speechSample,
         asrModelId: this.form.model.asrModelId,
         vadModelId: this.form.model.vadModelId,
         llmModelId: this.form.model.llmModelId,
@@ -191,59 +307,67 @@ export default {
         langCode: this.form.langCode,
         language: this.form.language,
         sort: this.form.sort,
-        functions: this.currentFunctions
+        functions: this.currentFunctions,
       };
-      Api.agent.updateAgentConfig(this.$route.query.agentId, configData, ({ data }) => {
-        if (data.code === 0) {
-          this.$message.success({
-            message: '配置保存成功',
-            showClose: true
-          });
-        } else {
-          this.$message.error({
-            message: data.msg || '配置保存失败',
-            showClose: true
-          });
-        }
-      });
-    },
-    resetConfig() {
-      this.$confirm('确定要重置配置吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.form = {
-          agentCode: "",
-          agentName: "",
-          ttsVoiceId: "",
-          chatHistoryConf: 0,
-          systemPrompt: "",
-          langCode: "",
-          language: "",
-          sort: "",
-          model: {
-            ttsModelId: "",
-            vadModelId: "",
-            asrModelId: "",
-            llmModelId: "",
-            memModelId: "",
-            intentModelId: "",
+      Api.agent.updateAgentConfig(
+        this.$route.query.agentId,
+        configData,
+        ({ data }) => {
+          if (data.code === 0) {
+            this.$message.success({
+              message: "配置保存成功",
+              showClose: true,
+            });
+          } else {
+            this.$message.error({
+              message: data.msg || "配置保存失败",
+              showClose: true,
+            });
           }
         }
-        this.currentFunctions = [];
-        this.$message.success({
-          message: '配置已重置',
-          showClose: true
+      );
+    },
+    resetConfig() {
+      this.$confirm("确定要重置配置吗？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.form = {
+            agentCode: "",
+            agentName: "",
+            wakeupWord: "",
+            speechSample: "",
+            ttsVoiceId: "",
+            chatHistoryConf: 0,
+            systemPrompt: "",
+            langCode: "",
+            language: "",
+            sort: "",
+            model: {
+              ttsModelId: "",
+              vadModelId: "",
+              asrModelId: "",
+              llmModelId: "",
+              memModelId: "",
+              intentModelId: "",
+            },
+          };
+          this.currentFunctions = [];
+          this.$message.success({
+            message: "配置已重置",
+            showClose: true,
+          });
         })
-      }).catch(() => { });
+        .catch(() => {});
     },
     fetchTemplates() {
       Api.agent.getAgentTemplate(({ data }) => {
         if (data.code === 0) {
           this.templates = data.data;
         } else {
-          this.$message.error(data.msg || '获取模板列表失败');
+          this.$message.error(data.msg || "获取模板列表失败");
         }
       });
     },
@@ -254,14 +378,14 @@ export default {
         this.applyTemplateData(template);
         this.$message.success({
           message: `「${template.agentName}」模板已应用`,
-          showClose: true
+          showClose: true,
         });
       } catch (error) {
         this.$message.error({
-          message: '应用模板失败',
-          showClose: true
+          message: "应用模板失败",
+          showClose: true,
         });
-        console.error('应用模板失败:', error);
+        console.error("应用模板失败:", error);
       } finally {
         this.loadingTemplate = false;
       }
@@ -270,8 +394,11 @@ export default {
       this.form = {
         ...this.form,
         agentName: templateData.agentName || this.form.agentName,
+        wakeupWord: templateData.wakeupWord || this.form.wakeupWord,
+        speechSample: templateData.speechSample || this.form.speechSample,
         ttsVoiceId: templateData.ttsVoiceId || this.form.ttsVoiceId,
-        chatHistoryConf: templateData.chatHistoryConf || this.form.chatHistoryConf,
+        chatHistoryConf:
+          templateData.chatHistoryConf || this.form.chatHistoryConf,
         systemPrompt: templateData.systemPrompt || this.form.systemPrompt,
         langCode: templateData.langCode || this.form.langCode,
         model: {
@@ -280,8 +407,9 @@ export default {
           asrModelId: templateData.asrModelId || this.form.model.asrModelId,
           llmModelId: templateData.llmModelId || this.form.model.llmModelId,
           memModelId: templateData.memModelId || this.form.model.memModelId,
-          intentModelId: templateData.intentModelId || this.form.model.intentModelId
-        }
+          intentModelId:
+            templateData.intentModelId || this.form.model.intentModelId,
+        },
       };
     },
     fetchAgentConfig(agentId) {
@@ -296,25 +424,29 @@ export default {
               asrModelId: data.data.asrModelId,
               llmModelId: data.data.llmModelId,
               memModelId: data.data.memModelId,
-              intentModelId: data.data.intentModelId
-            }
+              intentModelId: data.data.intentModelId,
+            },
           };
           this.currentFunctions = data.data.functions || [];
         } else {
-          this.$message.error(data.msg || '获取配置失败');
+          this.$message.error(data.msg || "获取配置失败");
         }
       });
     },
     fetchModelOptions() {
-      this.models.forEach(model => {
-        Api.model.getModelNames(model.type, '', ({ data }) => {
+      this.models.forEach((model) => {
+        Api.model.getModelNames(model.type, "", ({ data }) => {
           if (data.code === 0) {
-            this.$set(this.modelOptions, model.type, data.data.map(item => ({
-              value: item.id,
-              label: item.modelName
-            })));
+            this.$set(
+              this.modelOptions,
+              model.type,
+              data.data.map((item) => ({
+                value: item.id,
+                label: item.modelName,
+              }))
+            );
           } else {
-            this.$message.error(data.msg || '获取模型列表失败');
+            this.$message.error(data.msg || "获取模型列表失败");
           }
         });
       });
@@ -324,11 +456,11 @@ export default {
         this.voiceOptions = [];
         return;
       }
-      Api.model.getModelVoices(modelId, '', ({ data }) => {
+      Api.model.getModelVoices(modelId, "", ({ data }) => {
         if (data.code === 0 && data.data) {
-          this.voiceOptions = data.data.map(voice => ({
+          this.voiceOptions = data.data.map((voice) => ({
             value: voice.id,
-            label: voice.name
+            label: voice.name,
           }));
         } else {
           this.voiceOptions = [];
@@ -346,23 +478,27 @@ export default {
       //   this.form.model.intentModelId !== 'Intent_nointent';
     },
     handleModelChange(type, value) {
-      if (type === 'Intent' && value !== 'Intent_nointent') {
+      if (type === "Intent" && value !== "Intent_nointent") {
         this.fetchFunctionList();
       }
-      if (type === 'Memory' && value === 'Memory_nomem') {
+      if (type === "Memory" && value === "Memory_nomem") {
         this.form.chatHistoryConf = 0;
       }
-      if (type === 'Memory' && value !== 'Memory_nomem' && (this.form.chatHistoryConf === 0 || this.form.chatHistoryConf === null)) {
+      if (
+        type === "Memory" &&
+        value !== "Memory_nomem" &&
+        (this.form.chatHistoryConf === 0 || this.form.chatHistoryConf === null)
+      ) {
         this.form.chatHistoryConf = 2;
       }
     },
     fetchFunctionList() {
       // 使用假数据代替API调用
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         setTimeout(() => {
           this.currentFunctions = [
-            { name: '天气', params: { city: '北京' } },
-            { name: '新闻', params: { type: '科技' } }
+            { name: "天气", params: { city: "北京" } },
+            { name: "新闻", params: { type: "科技" } },
           ];
           resolve();
         }, 500);
@@ -370,32 +506,34 @@ export default {
     },
     handleUpdateFunctions(selected) {
       this.currentFunctions = selected;
-      console.log('保存的功能列表:', selected);
-      this.$message.success('功能配置已保存');
+      console.log("保存的功能列表:", selected);
+      this.$message.success("功能配置已保存");
     },
     handleDialogClosed(saved) {
       if (!saved) {
         // 如果未保存，恢复原始功能列表
-        this.currentFunctions = JSON.parse(JSON.stringify(this.originalFunctions));
+        this.currentFunctions = JSON.parse(
+          JSON.stringify(this.originalFunctions)
+        );
       }
     },
     updateChatHistoryConf() {
-      if (this.form.model.memModelId === 'Memory_nomem') {
+      if (this.form.model.memModelId === "Memory_nomem") {
         this.form.chatHistoryConf = 0;
       }
     },
   },
   watch: {
-    'form.model.ttsModelId': {
+    "form.model.ttsModelId": {
       handler(newVal, oldVal) {
         if (oldVal && newVal !== oldVal) {
-          this.form.ttsVoiceId = '';
+          this.form.ttsVoiceId = "";
           this.fetchVoiceOptions(newVal);
         } else {
           this.fetchVoiceOptions(newVal);
         }
       },
-      immediate: true
+      immediate: true,
     },
     voiceOptions: {
       handler(newVal) {
@@ -403,21 +541,23 @@ export default {
           this.form.ttsVoiceId = newVal[0].value;
         }
       },
-      immediate: true
-    }
+      immediate: true,
+    },
   },
   mounted() {
     const agentId = this.$route.query.agentId;
     if (agentId) {
       this.fetchAgentConfig(agentId);
       this.fetchFunctionList().then(() => {
-        this.originalFunctions = JSON.parse(JSON.stringify(this.currentFunctions));
+        this.originalFunctions = JSON.parse(
+          JSON.stringify(this.currentFunctions)
+        );
       });
     }
     this.fetchModelOptions();
     this.fetchTemplates();
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
@@ -680,8 +820,8 @@ export default {
 }
 
 .custom-close-btn:hover {
-  color: #409EFF;
-  border-color: #409EFF;
+  color: #409eff;
+  border-color: #409eff;
 }
 
 .edit-function-btn {
